@@ -1,9 +1,20 @@
+
+'use client';
+
 import type { PropsWithChildren } from 'react';
 import { AppHeader } from '@/components/layout/app-header';
 import { AppSidebar } from '@/components/layout/app-sidebar';
-import { SidebarInset } from '@/components/ui/sidebar';
+import { SidebarInset, useSidebar } from '@/components/ui/sidebar';
 
 export default function AppLayout({ children }: PropsWithChildren) {
+  const { isMobile } = useSidebar();
+
+  if (isMobile === undefined) {
+    // Return null or a consistent placeholder skeleton during SSR and initial client render
+    // This prevents hydration mismatches for layouts depending on isMobile state.
+    return null;
+  }
+
   return (
     <div className="flex min-h-screen w-full flex-col">
       <AppSidebar />
