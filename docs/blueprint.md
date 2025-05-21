@@ -1,4 +1,4 @@
-# **App Name**: MediAssistant
+# **App Name**: Medibot
 
 ## Core Features:
 
@@ -9,7 +9,7 @@
 
 ## Style Guidelines:
 
-- Primary color: Light blue (#ADD8E6), symbolizing trust and health.
+- Primary color: Light blue (#ADD8E6), symbolizing trust and health. (temporary)
 - Background color: Very light blue (#F0F8FF), creates a clean and calming environment.
 - Accent color: Soft green (#90EE90) to highlight important information and calls to action.
 - Clean and readable sans-serif font to ensure clarity.
