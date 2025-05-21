@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -260,29 +261,49 @@ const Sidebar = React.forwardRef<
 Sidebar.displayName = "Sidebar"
 
 const SidebarTrigger = React.forwardRef<
-  React.ElementRef<typeof Button>,
+  HTMLButtonElement,
   React.ComponentProps<typeof Button>
->(({ className, onClick, ...props }, ref) => {
-  const { toggleSidebar } = useSidebar()
+>(({ className, onClick, asChild = false, children, ...props }, ref) => {
+  const { toggleSidebar } = useSidebar();
 
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (typeof onClick === 'function') {
+      onClick(event);
+    }
+    toggleSidebar();
+  };
+
+  if (asChild) {
+    // When asChild is true, Slot clones the single child and merges props.
+    // The children prop for Slot is the single element child passed to SidebarTrigger.
+    return (
+      <Slot
+        ref={ref}
+        onClick={handleClick}
+        className={className} // Pass className from SidebarTrigger's usage
+        {...props} // Pass other props (like variant, size if they were on SidebarTrigger itself)
+      >
+        {children}
+      </Slot>
+    );
+  }
+
+  // Default rendering: a Button with PanelLeft icon
   return (
     <Button
       ref={ref}
       data-sidebar="trigger"
       variant="ghost"
       size="icon"
-      className={cn("h-7 w-7", className)}
-      onClick={(event) => {
-        onClick?.(event)
-        toggleSidebar()
-      }}
-      {...props}
+      className={cn("h-7 w-7", className)} // Default styling + className from usage
+      onClick={handleClick}
+      {...props} // Pass other props
     >
       <PanelLeft />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
-  )
-})
+  );
+});
 SidebarTrigger.displayName = "SidebarTrigger"
 
 const SidebarRail = React.forwardRef<
@@ -549,6 +570,7 @@ const SidebarMenuButton = React.forwardRef<
       size = "default",
       tooltip,
       className,
+      children, // Added children here to be explicit
       ...props
     },
     ref
@@ -556,7 +578,7 @@ const SidebarMenuButton = React.forwardRef<
     const Comp = asChild ? Slot : "button"
     const { isMobile, state } = useSidebar()
 
-    const button = (
+    const buttonElement = ( // Renamed 'button' to 'buttonElement'
       <Comp
         ref={ref}
         data-sidebar="menu-button"
@@ -564,22 +586,22 @@ const SidebarMenuButton = React.forwardRef<
         data-active={isActive}
         className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
         {...props}
-      />
+      >
+        {children}
+      </Comp>
     )
 
     if (!tooltip) {
-      return button
+      return buttonElement
     }
 
     if (typeof tooltip === "string") {
-      tooltip = {
-        children: tooltip,
-      }
+      tooltip = { children: tooltip }
     }
 
     return (
       <Tooltip>
-        <TooltipTrigger asChild>{button}</TooltipTrigger>
+        <TooltipTrigger asChild>{buttonElement}</TooltipTrigger>
         <TooltipContent
           side="right"
           align="center"
@@ -712,7 +734,7 @@ const SidebarMenuSubButton = React.forwardRef<
     size?: "sm" | "md"
     isActive?: boolean
   }
->(({ asChild = false, size = "md", isActive, className, ...props }, ref) => {
+>(({ asChild = false, size = "md", isActive, className, children, ...props }, ref) => { // Added children
   const Comp = asChild ? Slot : "a"
 
   return (
@@ -730,7 +752,9 @@ const SidebarMenuSubButton = React.forwardRef<
         className
       )}
       {...props}
-    />
+    >
+      {children}
+    </Comp>
   )
 })
 SidebarMenuSubButton.displayName = "SidebarMenuSubButton"
