@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { MessageSquare, BookOpenText, UserCircle2, X } from 'lucide-react'; 
+import { MessageSquare, BookOpenText, UserCircle2 } from 'lucide-react';
 import {
   Sidebar,
   SidebarHeader,
@@ -11,10 +11,10 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  useSidebar, 
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { LogoIcon } from '@/components/icons/logo-icon';
-import { Button } from '@/components/ui/button'; 
+// Removed X icon and Button import as the close button in this header is being removed.
 
 const navItems = [
   { href: '/chatbot', label: 'AI Chatbot', icon: MessageSquare },
@@ -24,29 +24,18 @@ const navItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { toggleSidebar, state: desktopState, isMobile } = useSidebar(); 
+  // const { toggleSidebar, state: desktopState, isMobile } = useSidebar(); // toggleSidebar, desktopState, isMobile no longer needed here
 
   return (
     <Sidebar collapsible="icon" variant="sidebar" side="left">
       {/* This SidebarHeader is for DESKTOP view. It's hidden on mobile. */}
-      <SidebarHeader className="items-center justify-between border-b py-3 hidden md:flex px-2"> 
+      {/* The "X" button to close has been removed from here. Closing is handled by AppHeader's Menu button. */}
+      <SidebarHeader className="items-center justify-start border-b py-3 hidden md:flex px-2">
         <Link href="/chatbot" className="flex items-center gap-2 text-lg font-semibold text-foreground group-data-[collapsible=icon]:hidden">
           <LogoIcon className="h-7 w-7 text-primary" />
           <span className="text-foreground group-data-[collapsible=icon]:hidden">Medibot</span>
         </Link>
-        
-        {/* Show X to close button only on desktop when sidebar is expanded */}
-        {desktopState === 'expanded' && !isMobile && (
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={toggleSidebar} 
-            className="group-data-[collapsible=icon]:hidden h-7 w-7"
-            aria-label="Close sidebar"
-          >
-            <X className="h-5 w-5" />
-          </Button>
-        )}
+        {/* Removed the X button that was here */}
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>

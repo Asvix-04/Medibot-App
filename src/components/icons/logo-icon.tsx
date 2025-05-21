@@ -1,37 +1,27 @@
 
-import Image from 'next/image';
-import type { SVGProps } from 'react'; // Keep for props compatibility if needed, though many won't apply
-
-// Props for next/image might differ, but we can keep a similar signature for now.
-// Width and height are required for next/image unless 'fill' is used.
-// The className will be passed to the underlying <img> tag via next/image.
-interface LogoIconProps extends Omit<SVGProps<SVGSVGElement>, 'width' | 'height'> {
-  width?: number;
-  height?: number;
-  alt?: string;
+// Using a simplified SVG representation of a tree.
+// You can replace this with your own SVG or Next/Image component if you have a specific logo file.
+interface LogoIconProps extends React.SVGProps<SVGSVGElement> {
+  // You can add specific props for the logo if needed in the future
 }
 
-export function LogoIcon({ 
-  className, 
-  width = 32, // Default width, adjust as needed
-  height = 32, // Default height, adjust as needed
-  alt = "Medibot Logo",
-  ...props 
-}: LogoIconProps) {
-  // Assuming the logo file is named 'medibot-logo.png' and is in the 'public' folder
-  // If your logo file has a different name or path, update it here.
-  // The props passed (like stroke, fill, etc.) won't apply to next/image directly but are kept for signature compatibility
-  // if this component was used with SVG-specific props elsewhere, though it's better to remove them if not used.
+export function LogoIcon({ className, ...props }: LogoIconProps) {
   return (
-    <Image
-      src="/medibot-logo.png" // Path relative to the 'public' directory
-      alt={alt}
-      width={width}
-      height={height}
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 100 100"
       className={className}
-      // You can add other next/image props here if needed, e.g., priority, quality
-      // {...props} // Spreading remaining SVG props might not be ideal here.
-      // Only spread props relevant to next/image or the underlying <img> tag if necessary.
-    />
+      fill="currentColor" // Use currentColor to inherit color from parent
+      {...props}
+    >
+      {/* Trunk and lower branches */}
+      <path d="M50 90 V60 M50 60 L35 45 M50 60 L65 45" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
+      {/* Main leafy crown */}
+      <path d="M50,15 C30,15 20,30 20,45 C20,60 30,75 50,75 C70,75 80,60 80,45 C80,30 70,15 50,15 Z" />
+      {/* Smaller leafy details to suggest a fuller tree */}
+      <circle cx="35" cy="35" r="12" />
+      <circle cx="65" cy="35" r="12" />
+      <circle cx="50" cy="25" r="10" />
+    </svg>
   );
 }

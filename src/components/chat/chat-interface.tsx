@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ChatMessage } from './chat-message';
-import { Send, Loader2, History, X, PlusCircle, MessageSquare } from 'lucide-react';
+import { Send, Loader2, History, PlusCircle, MessageSquare } from 'lucide-react'; // Removed X
 import { useToast } from "@/hooks/use-toast";
 import {
   Sheet,
@@ -17,7 +17,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  SheetClose,
+  // SheetClose, // SheetClose is removed as the explicit X button is removed
 } from "@/components/ui/sheet";
 import { Separator } from '../ui/separator';
 
@@ -143,11 +143,9 @@ export function ChatInterface() {
           </SheetTrigger>
           <SheetContent className="w-full sm:w-[400px] p-0 flex flex-col">
             <SheetHeader className="p-4 border-b">
-              <SheetTitle className="flex items-center justify-between">
+              {/* The SheetClose X button has been removed from here */}
+              <SheetTitle className="flex items-center justify-start">
                 Chat History
-                <SheetClose asChild>
-                  <Button variant="ghost" size="icon"><X className="h-4 w-4" /></Button>
-                </SheetClose>
               </SheetTitle>
             </SheetHeader>
             <div className="p-4 border-b">
