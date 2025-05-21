@@ -17,7 +17,7 @@ body {
     --popover: 240 8% 10%; /* Darker Popover */
     --popover-foreground: 0 0% 98%;
 
-    --primary: 320 85% 55%; /* Vibrant Magenta/Pink - for buttons */
+    --primary: 270 70% 55%; /* Vibrant Violetish Purple - for buttons */
     --primary-foreground: 0 0% 100%; /* White */
 
     --secondary: 260 60% 50%; /* Deep Indigo/Purple */
@@ -34,7 +34,7 @@ body {
 
     --border: 240 6% 18%; /* Subtle Dark Border */
     --input: 240 6% 15%; /* Dark Input Background */
-    --ring: 320 85% 65%; /* Lighter version of primary for focus rings */
+    --ring: 270 70% 65%; /* Lighter version of primary for focus rings */
 
     --chart-1: 275 75% 60%; /* Vibrant Purple */
     --chart-2: 220 75% 55%; /* Vibrant Blue */
@@ -46,12 +46,12 @@ body {
     /* Sidebar specific colors, aligned with the new dark theme */
     --sidebar-background: 240 8% 12%; /* Same as card */
     --sidebar-foreground: 0 0% 98%; /* White */
-    --sidebar-primary: 320 85% 55%; /* Vibrant Magenta/Pink for active/hover */
+    --sidebar-primary: 270 70% 55%; /* Vibrant Violetish Purple for active/hover */
     --sidebar-primary-foreground: 0 0% 100%; /* White */
     --sidebar-accent: 275 75% 60%; /* Vibrant Purple for accents */
     --sidebar-accent-foreground: 0 0% 100%; /* White */
     --sidebar-border: 240 6% 18%; /* Same as border */
-    --sidebar-ring: 320 85% 65%; /* Same as ring */
+    --sidebar-ring: 270 70% 65%; /* Same as ring */
   }
 
   /* 

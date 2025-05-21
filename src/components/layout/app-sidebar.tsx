@@ -28,16 +28,23 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" variant="sidebar" side="left">
+      {/* This SidebarHeader is for DESKTOP view. It's hidden on mobile. */}
       <SidebarHeader className="items-center justify-between border-b py-3 hidden md:flex px-2"> 
-        <Link href="/chatbot" className="flex items-center gap-2 text-lg font-semibold">
+        <Link href="/chatbot" className="flex items-center gap-2 text-lg font-semibold text-foreground group-data-[collapsible=icon]:hidden">
           <LogoIcon className="h-7 w-7 text-primary" />
-          <span className="text-foreground group-data-[collapsible=icon]:hidden">Medibot</span>
+          <span>Medibot</span>
         </Link>
         
-        {!isMobile && desktopState === 'expanded' && (
-          <Button variant="ghost" size="icon" onClick={toggleSidebar} className="group-data-[collapsible=icon]:hidden h-7 w-7">
+        {/* Show X to close button only on desktop when sidebar is expanded */}
+        {desktopState === 'expanded' && (
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={toggleSidebar} 
+            className="group-data-[collapsible=icon]:hidden h-7 w-7"
+            aria-label="Close sidebar"
+          >
             <X className="h-5 w-5" />
-            <span className="sr-only">Close sidebar</span>
           </Button>
         )}
       </SidebarHeader>
@@ -59,7 +66,6 @@ export function AppSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      
     </Sidebar>
   );
 }
