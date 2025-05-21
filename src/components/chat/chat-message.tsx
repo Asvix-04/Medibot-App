@@ -1,8 +1,12 @@
+
+'use client';
+
 import type { Message } from '@/lib/types';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Bot, User, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useState, useEffect } from 'react';
 
 interface ChatMessageProps {
   message: Message;
@@ -10,6 +14,13 @@ interface ChatMessageProps {
 
 export function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.role === 'user';
+  const [displayTime, setDisplayTime] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (message.timestamp) {
+      setDisplayTime(message.timestamp.toLocaleTimeString());
+    }
+  }, [message.timestamp]);
 
   return (
     <div className={cn('flex items-start gap-3 my-4', isUser ? 'justify-end' : 'justify-start')}>
@@ -44,9 +55,9 @@ export function ChatMessage({ message }: ChatMessageProps) {
             </div>
           )}
         </CardContent>
-        {message.timestamp && (
+        {displayTime && (
            <CardFooter className="text-xs text-muted-foreground px-3 pb-2 pt-0 justify-end">
-            {message.timestamp.toLocaleTimeString()}
+            {displayTime}
           </CardFooter>
         )}
       </Card>
