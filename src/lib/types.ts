@@ -12,6 +12,7 @@ export type SignUpFormData = {
   password_hash: string; // Store hash, not plain password
   mobile_number: string;
   country_code: string;
+  // captcha is not part of the data to store, it's for validation only
 };
 
 export type SignInFormData = {
@@ -28,4 +29,15 @@ export type UserDetailsFormData = {
   currentMedications?: string;
   addictions?: string[]; // e.g., ['smoking', 'drinking']
   pastDiseases?: string;
+};
+
+// Defines the shape of the state object returned by server actions
+// and used by useActionState.
+export type ActionFormState<TFields = Record<string, any>> = {
+  success: boolean;
+  message: string;
+  errors?: {
+    [K in keyof TFields]?: string[];
+  } & { _form?: string[] }; // For general form errors not tied to a specific field
+  redirectTo?: string;
 };

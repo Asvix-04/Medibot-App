@@ -2,7 +2,7 @@
 'use server';
 
 import { z } from 'zod';
-import type { SignUpFormData } from '@/lib/types';
+import type { SignUpFormData, ActionFormState } from '@/lib/types';
 
 const SignUpSchema = z.object({
   email: z.string().email({ message: 'Invalid email address.' }),
@@ -13,10 +13,17 @@ const SignUpSchema = z.object({
   captcha: z.boolean().refine(value => value === true, { message: 'Please confirm you are not a robot.' }),
 }).refine(data => data.password === data.confirmPassword, {
   message: "Passwords don't match.",
-  path: ['confirmPassword'], // Point error to confirmPassword field
+  path: ['confirmPassword'],
 });
 
-export async function handleSignUp(formData: FormData) {
+// Refine SignUpFormData to exclude confirmPassword and captcha as they are not stored
+type StorableSignUpData = Omit<z.infer<typeof SignUpSchema>, 'confirmPassword' | 'captcha'>;
+
+
+export async function handleSignUp(
+  prevState: ActionFormState<z.infer<typeof SignUpSchema>>,
+  formData: FormData
+): Promise<ActionFormState<z.infer<typeof SignUpSchema>>> {
   const rawFormData = Object.fromEntries(formData.entries());
   const parsed = SignUpSchema.safeParse({
     ...rawFormData,
@@ -49,6 +56,8 @@ export async function handleSignUp(formData: FormData) {
   return {
     success: true,
     message: 'Sign up successful! Please proceed to sign in.',
+    errors: {},
     // In a real app, you might redirect or return a session token
+    // redirectTo: '/signin' // Example
   };
 }
