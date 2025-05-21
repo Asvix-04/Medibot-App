@@ -11,7 +11,12 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader, // Added
+  SheetTitle,  // Added
+} from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Tooltip,
@@ -199,7 +204,7 @@ const Sidebar = React.forwardRef<
           <SheetContent
             data-sidebar="sidebar"
             data-mobile="true"
-            className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+            className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground flex flex-col"
             style={
               {
                 "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
@@ -207,7 +212,12 @@ const Sidebar = React.forwardRef<
             }
             side={side}
           >
-            <div className="flex h-full w-full flex-col">{children}</div>
+            <SheetHeader className="p-4 border-b">
+              <SheetTitle>Menu</SheetTitle>
+            </SheetHeader>
+            <div className="flex-1 flex h-full w-full flex-col overflow-y-auto">
+                {children}
+            </div>
           </SheetContent>
         </Sheet>
       )
@@ -262,8 +272,8 @@ Sidebar.displayName = "Sidebar"
 
 const SidebarTrigger = React.forwardRef<
   HTMLButtonElement,
-  React.ComponentProps<typeof Button>
->(({ className, onClick, asChild = false, children, ...props }, ref) => {
+  React.ComponentProps<typeof Button> & { asChild?: boolean }
+>(({ className, onClick, children, asChild = false, ...props }, ref) => {
   const { toggleSidebar } = useSidebar();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -274,33 +284,30 @@ const SidebarTrigger = React.forwardRef<
   };
 
   if (asChild) {
-    // When asChild is true, Slot clones the single child and merges props.
-    // The children prop for Slot is the single element child passed to SidebarTrigger.
     return (
       <Slot
         ref={ref}
         onClick={handleClick}
-        className={className} // Pass className from SidebarTrigger's usage
-        {...props} // Pass other props (like variant, size if they were on SidebarTrigger itself)
+        className={className}
+        {...props}
       >
         {children}
       </Slot>
     );
   }
 
-  // Default rendering: a Button with PanelLeft icon
   return (
     <Button
       ref={ref}
       data-sidebar="trigger"
       variant="ghost"
       size="icon"
-      className={cn("h-7 w-7", className)} // Default styling + className from usage
+      className={cn("h-7 w-7", className)}
       onClick={handleClick}
-      {...props} // Pass other props
+      {...props}
     >
-      <PanelLeft />
-      <span className="sr-only">Toggle Sidebar</span>
+      {children || <PanelLeft />} {/* Ensure children are rendered if provided, else PanelLeft */}
+      {!children && <span className="sr-only">Toggle Sidebar</span>}
     </Button>
   );
 });
@@ -570,7 +577,7 @@ const SidebarMenuButton = React.forwardRef<
       size = "default",
       tooltip,
       className,
-      children, // Added children here to be explicit
+      children, 
       ...props
     },
     ref
@@ -578,7 +585,7 @@ const SidebarMenuButton = React.forwardRef<
     const Comp = asChild ? Slot : "button"
     const { isMobile, state } = useSidebar()
 
-    const buttonElement = ( // Renamed 'button' to 'buttonElement'
+    const buttonElement = ( 
       <Comp
         ref={ref}
         data-sidebar="menu-button"
@@ -734,7 +741,7 @@ const SidebarMenuSubButton = React.forwardRef<
     size?: "sm" | "md"
     isActive?: boolean
   }
->(({ asChild = false, size = "md", isActive, className, children, ...props }, ref) => { // Added children
+>(({ asChild = false, size = "md", isActive, className, children, ...props }, ref) => { 
   const Comp = asChild ? Slot : "a"
 
   return (
