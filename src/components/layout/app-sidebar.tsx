@@ -32,11 +32,11 @@ export function AppSidebar() {
       <SidebarHeader className="items-center justify-between border-b py-3 hidden md:flex px-2"> 
         <Link href="/chatbot" className="flex items-center gap-2 text-lg font-semibold text-foreground group-data-[collapsible=icon]:hidden">
           <LogoIcon className="h-7 w-7 text-primary" />
-          <span>Medibot</span>
+          <span className="text-foreground group-data-[collapsible=icon]:hidden">Medibot</span>
         </Link>
         
         {/* Show X to close button only on desktop when sidebar is expanded */}
-        {desktopState === 'expanded' && (
+        {desktopState === 'expanded' && !isMobile && (
           <Button 
             variant="ghost" 
             size="icon" 

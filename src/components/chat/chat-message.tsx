@@ -3,10 +3,10 @@
 
 import type { Message } from '@/lib/types';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card'; // Removed CardFooter
 import { Bot, User, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState, useEffect } from 'react';
+// Removed useState, useEffect as displayTime is no longer used
 
 interface ChatMessageProps {
   message: Message;
@@ -14,13 +14,7 @@ interface ChatMessageProps {
 
 export function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.role === 'user';
-  const [displayTime, setDisplayTime] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (message.timestamp) {
-      setDisplayTime(message.timestamp.toLocaleTimeString());
-    }
-  }, [message.timestamp]);
+  // Removed displayTime state and effect
 
   return (
     <div className={cn('flex items-start gap-3 my-4', isUser ? 'justify-end' : 'justify-start')}>
@@ -55,11 +49,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
             </div>
           )}
         </CardContent>
-        {displayTime && (
-           <CardFooter className="text-xs text-muted-foreground px-3 pb-2 pt-0 justify-end">
-            {displayTime}
-          </CardFooter>
-        )}
+        {/* Removed CardFooter and displayTime */}
       </Card>
       {isUser && (
          <Avatar className="h-8 w-8 shrink-0">
