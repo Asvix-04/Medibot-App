@@ -1,32 +1,37 @@
 
-import type { SVGProps } from 'react';
+import Image from 'next/image';
+import type { SVGProps } from 'react'; // Keep for props compatibility if needed, though many won't apply
 
-// Stylized Tree Icon inspired by the provided image
-export function LogoIcon(props: SVGProps<SVGSVGElement>) {
+// Props for next/image might differ, but we can keep a similar signature for now.
+// Width and height are required for next/image unless 'fill' is used.
+// The className will be passed to the underlying <img> tag via next/image.
+interface LogoIconProps extends Omit<SVGProps<SVGSVGElement>, 'width' | 'height'> {
+  width?: number;
+  height?: number;
+  alt?: string;
+}
+
+export function LogoIcon({ 
+  className, 
+  width = 32, // Default width, adjust as needed
+  height = 32, // Default height, adjust as needed
+  alt = "Medibot Logo",
+  ...props 
+}: LogoIconProps) {
+  // Assuming the logo file is named 'medibot-logo.png' and is in the 'public' folder
+  // If your logo file has a different name or path, update it here.
+  // The props passed (like stroke, fill, etc.) won't apply to next/image directly but are kept for signature compatibility
+  // if this component was used with SVG-specific props elsewhere, though it's better to remove them if not used.
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5" // Adjusted stroke width for a potentially more detailed look
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      {/* Trunk */}
-      <path d="M12 22V10" />
-      {/* Main Branches */}
-      <path d="M12 10L7 15" />
-      <path d="M12 10L17 15" />
-      {/* Secondary Branch details */}
-      <path d="M7 15L5 17" />
-      <path d="M17 15L19 17" />
-      {/* Canopy - using a series of arcs or simple shapes to suggest a full, rounded crown */}
-      {/* This is a simplified representation for an icon */}
-      <path d="M12 3a4 4 0 0 0-4 4c0 2 1 3 3 3.5V10h2v.5c2-.5 3-1.5 3-3.5a4 4 0 0 0-4-4z" />
-      <path d="M9.5 6.5a2.5 2.5 0 0 0-2.5 2.5c0 1 .5 1.5 1.5 2" />
-      <path d="M14.5 6.5a2.5 2.5 0 0 1 2.5 2.5c0 1-.5 1.5-1.5 2" />
-    </svg>
+    <Image
+      src="/medibot-logo.png" // Path relative to the 'public' directory
+      alt={alt}
+      width={width}
+      height={height}
+      className={className}
+      // You can add other next/image props here if needed, e.g., priority, quality
+      // {...props} // Spreading remaining SVG props might not be ideal here.
+      // Only spread props relevant to next/image or the underlying <img> tag if necessary.
+    />
   );
 }
