@@ -27,7 +27,7 @@ const MAX_DISPLAY_HISTORY_LENGTH = 50; // Max messages shown in history panel (c
 const initialGreetingMessage: Message = {
   id: 'initial-greeting', // Fixed ID for easy reset
   role: 'assistant',
-  content: "Hello! I'm MediAssistant. How can I help you with your medical questions today? Please note, I am an AI assistant and not a medical professional. Always consult with a doctor for medical advice.",
+  content: "Hello! I'm Medibot. How can I help you with your medical questions today? Please note, I am an AI assistant and not a medical professional. Always consult with a doctor for medical advice.",
   timestamp: new Date(),
 };
 
@@ -132,7 +132,7 @@ export function ChatInterface() {
       <div className="p-4 border-b flex justify-between items-center bg-card">
         <div className="flex items-center gap-2">
            <MessageSquare className="h-6 w-6 text-primary" />
-           <h2 className="text-lg font-semibold text-foreground">Chat with MediAssistant</h2>
+           <h2 className="text-lg font-semibold text-foreground">Chat with Medibot</h2>
         </div>
         <Sheet open={isHistoryOpen} onOpenChange={setIsHistoryOpen}>
           <SheetTrigger asChild>
@@ -181,7 +181,7 @@ export function ChatInterface() {
           {isLoading && messages[messages.length -1]?.role === 'user' && (
             <div className="flex items-start gap-3 my-4 justify-start">
                <Loader2 className="h-8 w-8 text-primary animate-spin shrink-0" />
-               <span className="text-sm text-muted-foreground italic">MediAssistant is typing...</span>
+               <span className="text-sm text-muted-foreground italic">Medibot is typing...</span>
             </div>
           )}
         </div>

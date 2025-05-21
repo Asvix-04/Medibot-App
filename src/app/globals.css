@@ -8,90 +8,56 @@ body {
 
 @layer base {
   :root {
-    --background: 208 100% 97%; /* #F0F8FF AliceBlue */
-    --foreground: 222.2 84% 4.9%; /* Default dark text */
+    --background: 240 10% 3.9%; /* Dark Desaturated Blue - almost black */
+    --foreground: 0 0% 98%; /* White */
 
-    --card: 0 0% 100%; /* White cards */
-    --card-foreground: 222.2 84% 4.9%; 
+    --card: 240 8% 12%; /* Slightly Lighter Dark Blue */
+    --card-foreground: 0 0% 98%; 
 
-    --popover: 0 0% 100%; /* White popovers */
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 240 8% 10%; /* Darker Popover */
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 195 53% 79%; /* #ADD8E6 LightBlue */
-    --primary-foreground: 224 71.4% 4.1%; /* Darker blue/black for text on light blue */
+    --primary: 320 85% 55%; /* Vibrant Magenta/Pink - for buttons */
+    --primary-foreground: 0 0% 100%; /* White */
 
-    --secondary: 210 40% 96.1%; /* Default light gray */
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 260 60% 50%; /* Deep Indigo/Purple */
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 240 5% 25%; /* Muted dark grey */
+    --muted-foreground: 240 5% 60%; /* Lighter grey for muted text */
 
-    --accent: 120 73% 75%; /* #90EE90 LightGreen */
-    --accent-foreground: 120 50% 10%; /* Dark green for text on light green */
+    --accent: 275 75% 60%; /* Vibrant Purple - for other accents, icons */
+    --accent-foreground: 0 0% 100%; /* White */
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 75% 50%; /* Saturated Red */
     --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 195 60% 50%; /* Adjusted ring to be related to primary */
+    --border: 240 6% 18%; /* Subtle Dark Border */
+    --input: 240 6% 15%; /* Dark Input Background */
+    --ring: 320 85% 65%; /* Lighter version of primary for focus rings */
 
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --chart-1: 275 75% 60%; /* Vibrant Purple */
+    --chart-2: 220 75% 55%; /* Vibrant Blue */
+    --chart-3: 330 80% 60%; /* Hot Pink */
+    --chart-4: 250 70% 50%; /* Indigo */
+    --chart-5: 295 70% 60%; /* Violet */
     --radius: 0.5rem;
 
-    /* Sidebar specific colors, aligned with the main theme */
-    --sidebar-background: 0 0% 100%; /* White sidebar */
-    --sidebar-foreground: 222.2 84% 4.9%; /* Dark text */
-    --sidebar-primary: 195 53% 79%; /* LightBlue for active/hover */
-    --sidebar-primary-foreground: 224 71.4% 4.1%; /* Dark text on LightBlue */
-    --sidebar-accent: 120 73% 75%; /* LightGreen for accents if needed */
-    --sidebar-accent-foreground: 120 50% 10%; /* Dark text on LightGreen */
-    --sidebar-border: 214.3 31.8% 91.4%; /* Light grey border */
-    --sidebar-ring: 195 60% 50%; /* Ring color for focus */
+    /* Sidebar specific colors, aligned with the new dark theme */
+    --sidebar-background: 240 8% 12%; /* Same as card */
+    --sidebar-foreground: 0 0% 98%; /* White */
+    --sidebar-primary: 320 85% 55%; /* Vibrant Magenta/Pink for active/hover */
+    --sidebar-primary-foreground: 0 0% 100%; /* White */
+    --sidebar-accent: 275 75% 60%; /* Vibrant Purple for accents */
+    --sidebar-accent-foreground: 0 0% 100%; /* White */
+    --sidebar-border: 240 6% 18%; /* Same as border */
+    --sidebar-ring: 320 85% 65%; /* Same as ring */
   }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 195 53% 79%; 
-    --primary-foreground: 224 71.4% 4.1%; 
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 120 73% 75%; 
-    --accent-foreground: 120 50% 10%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 195 60% 50%;
-
-    --sidebar-background: 222.2 84% 4.9%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 195 53% 79%;
-    --sidebar-primary-foreground: 224 71.4% 4.1%;
-    --sidebar-accent: 120 73% 75%;
-    --sidebar-accent-foreground: 120 50% 10%;
-    --sidebar-border: 217.2 32.6% 17.5%;
-    --sidebar-ring: 195 60% 50%;
-  }
+  /* 
+    The .dark class is no longer needed as the dark theme is now default in :root.
+    If a light theme is ever required, it can be added here under a .light class selector.
+  */
 }
 
 @layer base {

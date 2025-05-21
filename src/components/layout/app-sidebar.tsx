@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { MessageSquare, BookOpenText, UserCircle2, X } from 'lucide-react'; // Added X
+import { MessageSquare, BookOpenText, UserCircle2, X } from 'lucide-react'; 
 import {
   Sidebar,
   SidebarHeader,
@@ -11,11 +11,10 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  useSidebar, // Import useSidebar
+  useSidebar, 
 } from '@/components/ui/sidebar';
 import { LogoIcon } from '@/components/icons/logo-icon';
-import { Button } from '@/components/ui/button'; // Import Button
-// import { cn } from '@/lib/utils'; // cn is not strictly needed here if not using it for conditional classes on root
+import { Button } from '@/components/ui/button'; 
 
 const navItems = [
   { href: '/chatbot', label: 'AI Chatbot', icon: MessageSquare },
@@ -29,12 +28,12 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" variant="sidebar" side="left">
-      <SidebarHeader className="items-center justify-between border-b py-3 hidden md:flex px-2"> {/* Ensure this is flex-row like */}
+      <SidebarHeader className="items-center justify-between border-b py-3 hidden md:flex px-2"> 
         <Link href="/chatbot" className="flex items-center gap-2 text-lg font-semibold">
           <LogoIcon className="h-7 w-7 text-primary" />
-          <span className="text-foreground group-data-[collapsible=icon]:hidden">MediAssistant</span>
+          <span className="text-foreground group-data-[collapsible=icon]:hidden">Medibot</span>
         </Link>
-        {/* Add X button here, visible only on desktop when expanded */}
+        
         {!isMobile && desktopState === 'expanded' && (
           <Button variant="ghost" size="icon" onClick={toggleSidebar} className="group-data-[collapsible=icon]:hidden h-7 w-7">
             <X className="h-5 w-5" />
@@ -60,7 +59,7 @@ export function AppSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      {/* Optional SidebarFooter */}
+      
     </Sidebar>
   );
 }

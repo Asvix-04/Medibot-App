@@ -3,7 +3,7 @@
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { LogoIcon } from '@/components/icons/logo-icon';
-import { Menu } from 'lucide-react'; // Only Menu icon needed here
+import { Menu } from 'lucide-react'; 
 import { cn } from '@/lib/utils';
 
 export function AppHeader() {
@@ -24,7 +24,7 @@ export function AppHeader() {
             isMobile ? "" : (desktopState === "expanded" ? "" : "hidden") 
         )} />
         <h1 className="text-xl font-semibold text-foreground">
-          MediAssistant
+          Medibot
         </h1>
       </div>
     </header>

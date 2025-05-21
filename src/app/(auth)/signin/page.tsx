@@ -62,7 +62,7 @@ export default function SignInPage() {
     <Card>
       <CardHeader>
         <CardTitle className="text-2xl">Sign In</CardTitle>
-        <CardDescription>Welcome back to MediAssistant.</CardDescription>
+        <CardDescription>Welcome back to Medibot.</CardDescription>
       </CardHeader>
       <form action={formAction} ref={formRef}>
         <CardContent className="space-y-4">

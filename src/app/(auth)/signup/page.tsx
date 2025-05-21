@@ -47,7 +47,7 @@ export default function SignUpPage() {
     <Card>
       <CardHeader>
         <CardTitle className="text-2xl">Create an Account</CardTitle>
-        <CardDescription>Enter your details to sign up for MediAssistant.</CardDescription>
+        <CardDescription>Enter your details to sign up for Medibot.</CardDescription>
       </CardHeader>
       <form action={formAction} ref={formRef}>
         <CardContent className="space-y-4">

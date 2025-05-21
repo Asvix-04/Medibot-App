@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'MediAssistant',
+  title: 'Medibot',
   description: 'AI Medical Chatbot and Information Summarizer',
 };
 
