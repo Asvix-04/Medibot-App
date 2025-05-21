@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { handleSignIn, handleSocialSignIn } from './actions';
@@ -30,7 +30,7 @@ const FacebookIcon = () => (
 export default function SignInPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [formState, formAction] = useFormState(handleSignIn, { success: false, errors: {}, message: '' });
+  const [formState, formAction] = useActionState(handleSignIn, { success: false, errors: {}, message: '' });
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {

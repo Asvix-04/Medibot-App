@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import Link from 'next/link';
 import { handleSignUp } from './actions';
 import { Button } from '@/components/ui/button';
@@ -25,7 +25,7 @@ const countryCodes = [
 export default function SignUpPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [formState, formAction] = useFormState(handleSignUp, { success: false, errors: {}, message: '' });
+  const [formState, formAction] = useActionState(handleSignUp, { success: false, errors: {}, message: '' });
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {

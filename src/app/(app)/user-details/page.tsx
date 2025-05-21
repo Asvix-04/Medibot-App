@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { handleUserDetails } from './actions';
@@ -31,7 +31,7 @@ const addictionOptions = [
 export default function UserDetailsPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [formState, formAction] = useFormState(handleUserDetails, { success: false, errors: {}, message: '' });
+  const [formState, formAction] = useActionState(handleUserDetails, { success: false, errors: {}, message: '' });
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
