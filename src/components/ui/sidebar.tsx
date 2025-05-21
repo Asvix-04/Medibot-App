@@ -3,8 +3,8 @@
 
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { VariantProps, cva } from "class-variance-authority"
-import { PanelLeft, X } from "lucide-react" // Added X for SheetClose
+import { cva, type VariantProps} from "class-variance-authority";
+import { PanelLeft, X } from "lucide-react" 
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
@@ -16,9 +16,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetClose, // Added SheetClose
 } from "@/components/ui/sheet"
-import { Skeleton } from "@/components/ui/skeleton"
 import {
   Tooltip,
   TooltipContent,
@@ -39,7 +37,7 @@ type SidebarContext = {
   setOpen: (open: boolean) => void
   openMobile: boolean
   setOpenMobile: (open: boolean) => void
-  isMobile: boolean | undefined // Can be undefined initially
+  isMobile: boolean | undefined 
   toggleSidebar: () => void
 }
 
@@ -74,7 +72,7 @@ const SidebarProvider = React.forwardRef<
     },
     ref
   ) => {
-    const isMobile = useIsMobile() // isMobile can be undefined initially
+    const isMobile = useIsMobile() 
     const [openMobile, setOpenMobile] = React.useState(false)
 
     const [_open, _setOpen] = React.useState(defaultOpen)
@@ -95,9 +93,9 @@ const SidebarProvider = React.forwardRef<
     )
 
     const toggleSidebar = React.useCallback(() => {
-      if (isMobile) { // Only toggle if isMobile is boolean
+      if (isMobile) { 
         setOpenMobile((current) => !current);
-      } else if (isMobile === false) { // Explicitly check for false for desktop
+      } else if (isMobile === false) { 
         setOpen((current) => !current);
       }
     }, [isMobile, setOpen, setOpenMobile]);
@@ -183,13 +181,10 @@ const Sidebar = React.forwardRef<
     const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
 
     if (isMobile === undefined) {
-      // Render nothing or a placeholder skeleton until isMobile is determined
-      // Returning null might be acceptable for a sidebar if layout shifts are not a major concern.
-      // A skeleton could be used for better UX if needed: <Skeleton className="h-screen w-[--sidebar-width]" />
       return null;
     }
 
-    if (collapsible === "none" && !isMobile) { // Ensure collapsible=none is for desktop
+    if (collapsible === "none" && !isMobile) { 
       return (
         <div
           className={cn(
@@ -217,16 +212,10 @@ const Sidebar = React.forwardRef<
               } as React.CSSProperties
             }
             side={side}
-            // Remove showClose prop if not supported, default X button is handled by SheetContent
           >
-            <SheetHeader className="p-4 border-b flex justify-between items-center">
+            <SheetHeader className="p-4 border-b flex justify-start items-center">
               <SheetTitle>Menu</SheetTitle>
-              <SheetClose asChild>
-                <Button variant="ghost" size="icon">
-                  <X className="h-5 w-5" />
-                  <span className="sr-only">Close menu</span>
-                </Button>
-              </SheetClose>
+              {/* Removed SheetClose from here */}
             </SheetHeader>
             <div className="flex-1 flex h-full w-full flex-col overflow-y-auto">
                 {children}
@@ -292,7 +281,6 @@ const SidebarTrigger = React.forwardRef<
     if (onClick) {
       onClick(event);
     }
-    // Only toggle if isMobile is not undefined (i.e., client-side determination is complete)
     if (isMobile !== undefined) {
       toggleSidebar();
     }
@@ -621,7 +609,7 @@ const SidebarMenuButton = React.forwardRef<
         <TooltipContent
           side="right"
           align="center"
-          hidden={state !== "collapsed" || isMobile !== false} // Check isMobile is explicitly false for desktop
+          hidden={state !== "collapsed" || isMobile !== false} 
           {...tooltip}
         />
       </Tooltip>
@@ -775,6 +763,20 @@ const SidebarMenuSubButton = React.forwardRef<
 })
 SidebarMenuSubButton.displayName = "SidebarMenuSubButton"
 
+// Skeleton component (basic example if not already defined elsewhere)
+const Skeleton = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("animate-pulse rounded-md bg-muted", className)}
+    {...props}
+  />
+));
+Skeleton.displayName = "Skeleton";
+
+
 export {
   Sidebar,
   SidebarContent,
@@ -801,3 +803,4 @@ export {
   SidebarTrigger,
   useSidebar,
 }
+
