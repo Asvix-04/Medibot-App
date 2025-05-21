@@ -1,42 +1,57 @@
+
 'use client';
 
 import type { FormEvent } from 'react';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import type { Message } from '@/lib/types';
 import { answerMedicalQuestions } from '@/ai/flows/answer-medical-questions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ChatMessage } from './chat-message';
-import { Send, Loader2 } from 'lucide-react';
+import { Send, Loader2, History, X, PlusCircle, MessageSquare } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetClose,
+} from "@/components/ui/sheet";
+import { Separator } from '../ui/separator';
 
+const MAX_HISTORY_LENGTH = 20; // Max messages kept in current session state
+const MAX_DISPLAY_HISTORY_LENGTH = 50; // Max messages shown in history panel (could be different)
 
-const MAX_HISTORY_LENGTH = 20;
+const initialGreetingMessage: Message = {
+  id: 'initial-greeting', // Fixed ID for easy reset
+  role: 'assistant',
+  content: "Hello! I'm MediAssistant. How can I help you with your medical questions today? Please note, I am an AI assistant and not a medical professional. Always consult with a doctor for medical advice.",
+  timestamp: new Date(),
+};
+
 
 export function ChatInterface() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([initialGreetingMessage]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
+  // This would store all messages across sessions if we had persistence
+  // For now, it's just the current session's messages, but structured for future use
+  const [fullChatHistory, setFullChatHistory] = useState<Message[]>([initialGreetingMessage]);
+
+
   useEffect(() => {
-    // Set initial greeting message
-    setMessages([
-      {
-        id: crypto.randomUUID(), // Safe to use here as it's in useEffect
-        role: 'assistant',
-        content: "Hello! I'm MediAssistant. How can I help you with your medical questions today? Please note, I am an AI assistant and not a medical professional. Always consult with a doctor for medical advice.",
-        timestamp: new Date(),
-      },
-    ]);
     inputRef.current?.focus();
   }, []);
 
   useEffect(() => {
-    // Auto-scroll to bottom
+    // Auto-scroll to bottom of main chat
     if (scrollAreaRef.current) {
       const scrollViewport = scrollAreaRef.current.querySelector('div[data-radix-scroll-area-viewport]');
       if (scrollViewport) {
@@ -44,6 +59,17 @@ export function ChatInterface() {
       }
     }
   }, [messages]);
+
+  const addNewMessage = useCallback((message: Message) => {
+    setMessages((prevMessages) => [...prevMessages, message].slice(-MAX_HISTORY_LENGTH));
+    setFullChatHistory((prevHistory) => [...prevHistory, message].slice(-MAX_DISPLAY_HISTORY_LENGTH));
+    // TODO: Point 6 - Persist chat history for model training
+    // At certain intervals, or when a session "ends", this `fullChatHistory` (or new messages)
+    // could be sent to a server action.
+    // e.g., if (fullChatHistory.length % 10 === 0) { sendHistoryToServer(fullChatHistory); }
+    // console.log("Current full chat history (for potential training data):", fullChatHistory);
+  }, []);
+
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -56,7 +82,7 @@ export function ChatInterface() {
       timestamp: new Date(),
     };
 
-    setMessages((prevMessages) => [...prevMessages, userMessage].slice(-MAX_HISTORY_LENGTH));
+    addNewMessage(userMessage);
     setInputValue('');
     setIsLoading(true);
 
@@ -68,7 +94,7 @@ export function ChatInterface() {
         content: aiResponse.answer,
         timestamp: new Date(),
       };
-      setMessages((prevMessages) => [...prevMessages, assistantMessage].slice(-MAX_HISTORY_LENGTH));
+      addNewMessage(assistantMessage);
     } catch (error) {
       console.error('Error getting AI response:', error);
       toast({
@@ -82,15 +108,71 @@ export function ChatInterface() {
         content: "I'm having trouble connecting right now. Please try again later.",
         timestamp: new Date(),
       };
-      setMessages((prevMessages) => [...prevMessages, errorMessage].slice(-MAX_HISTORY_LENGTH));
+      addNewMessage(errorMessage);
     } finally {
       setIsLoading(false);
       inputRef.current?.focus();
     }
   };
 
+  const startNewChat = () => {
+    // TODO: Point 6 - If there's significant history, this is a good point to send it for "training"
+    // console.log("Starting new chat. Previous session history:", messages);
+    // sendHistoryToServer(messages); // Example call
+
+    setMessages([initialGreetingMessage]); // Reset to only initial greeting
+    setFullChatHistory([initialGreetingMessage]); // Reset full history as well for this demo
+    setInputValue('');
+    setIsHistoryOpen(false); // Close history panel on new chat
+    toast({ title: "New Chat Started", description: "Your previous conversation has been cleared from view." });
+  };
+
   return (
     <div className="flex flex-col h-[calc(100vh-theme(spacing.32))] md:h-[calc(100vh-theme(spacing.24))] bg-background rounded-lg shadow-lg overflow-hidden">
+      <div className="p-4 border-b flex justify-between items-center bg-card">
+        <div className="flex items-center gap-2">
+           <MessageSquare className="h-6 w-6 text-primary" />
+           <h2 className="text-lg font-semibold text-foreground">Chat with MediAssistant</h2>
+        </div>
+        <Sheet open={isHistoryOpen} onOpenChange={setIsHistoryOpen}>
+          <SheetTrigger asChild>
+            <Button variant="outline" size="icon">
+              <History className="h-5 w-5" />
+              <span className="sr-only">Toggle Chat History</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent className="w-full sm:w-[400px] p-0 flex flex-col">
+            <SheetHeader className="p-4 border-b">
+              <SheetTitle className="flex items-center justify-between">
+                Chat History
+                <SheetClose asChild>
+                  <Button variant="ghost" size="icon"><X className="h-4 w-4" /></Button>
+                </SheetClose>
+              </SheetTitle>
+            </SheetHeader>
+            <div className="p-4 border-b">
+              <Button onClick={startNewChat} className="w-full" variant="outline">
+                <PlusCircle className="mr-2 h-4 w-4" /> New Chat
+              </Button>
+            </div>
+            <ScrollArea className="flex-1 p-4">
+              {fullChatHistory.length === 1 && fullChatHistory[0].id === 'initial-greeting' ? (
+                <p className="text-sm text-muted-foreground text-center py-4">No chat history yet for this session.</p>
+              ) : (
+                <div className="space-y-4">
+                  {fullChatHistory.map((msg) => (
+                     <ChatMessage key={`${msg.id}-history`} message={msg} />
+                  ))}
+                </div>
+              )}
+            </ScrollArea>
+             <div className="p-2 text-xs text-center text-muted-foreground border-t">
+                Chat history is for the current session.
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+
       <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
         <div className="space-y-4">
           {messages.map((msg) => (

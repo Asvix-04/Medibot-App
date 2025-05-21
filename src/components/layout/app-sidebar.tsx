@@ -1,8 +1,9 @@
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { MessageSquare, BookOpenText, Home } from 'lucide-react';
+import { MessageSquare, BookOpenText, UserCircle2 } from 'lucide-react'; // Added UserCircle2
 import {
   Sidebar,
   SidebarHeader,
@@ -16,6 +17,7 @@ import { LogoIcon } from '@/components/icons/logo-icon';
 const navItems = [
   { href: '/chatbot', label: 'AI Chatbot', icon: MessageSquare },
   { href: '/info-summarizer', label: 'Info Summarizer', icon: BookOpenText },
+  { href: '/user-details', label: 'My Profile', icon: UserCircle2 }, // Added User Details link
 ];
 
 export function AppSidebar() {
