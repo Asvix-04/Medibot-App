@@ -4,7 +4,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
-import { PanelLeft } from "lucide-react"
+import { PanelLeft, X } from "lucide-react" // Added X for SheetClose
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
@@ -14,8 +14,9 @@ import { Separator } from "@/components/ui/separator"
 import {
   Sheet,
   SheetContent,
-  SheetHeader, // Added
-  SheetTitle,  // Added
+  SheetHeader,
+  SheetTitle,
+  SheetClose, // Added SheetClose
 } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
@@ -38,7 +39,7 @@ type SidebarContext = {
   setOpen: (open: boolean) => void
   openMobile: boolean
   setOpenMobile: (open: boolean) => void
-  isMobile: boolean
+  isMobile: boolean | undefined // Can be undefined initially
   toggleSidebar: () => void
 }
 
@@ -73,11 +74,9 @@ const SidebarProvider = React.forwardRef<
     },
     ref
   ) => {
-    const isMobile = useIsMobile()
+    const isMobile = useIsMobile() // isMobile can be undefined initially
     const [openMobile, setOpenMobile] = React.useState(false)
 
-    // This is the internal state of the sidebar.
-    // We use openProp and setOpenProp for control from outside the component.
     const [_open, _setOpen] = React.useState(defaultOpen)
     const open = openProp ?? _open
     const setOpen = React.useCallback(
@@ -88,22 +87,24 @@ const SidebarProvider = React.forwardRef<
         } else {
           _setOpen(openState)
         }
-
-        // This sets the cookie to keep the sidebar state.
-        document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+        if (typeof document !== 'undefined') {
+            document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+        }
       },
       [setOpenProp, open]
     )
 
-    // Helper to toggle the sidebar.
     const toggleSidebar = React.useCallback(() => {
-      return isMobile
-        ? setOpenMobile((open) => !open)
-        : setOpen((open) => !open)
-    }, [isMobile, setOpen, setOpenMobile])
+      if (isMobile) { // Only toggle if isMobile is boolean
+        setOpenMobile((current) => !current);
+      } else if (isMobile === false) { // Explicitly check for false for desktop
+        setOpen((current) => !current);
+      }
+    }, [isMobile, setOpen, setOpenMobile]);
 
-    // Adds a keyboard shortcut to toggle the sidebar.
+
     React.useEffect(() => {
+      if (typeof window === 'undefined') return;
       const handleKeyDown = (event: KeyboardEvent) => {
         if (
           event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
@@ -118,8 +119,6 @@ const SidebarProvider = React.forwardRef<
       return () => window.removeEventListener("keydown", handleKeyDown)
     }, [toggleSidebar])
 
-    // We add a state so that we can do data-state="expanded" or "collapsed".
-    // This makes it easier to style the sidebar with Tailwind classes.
     const state = open ? "expanded" : "collapsed"
 
     const contextValue = React.useMemo<SidebarContext>(
@@ -183,7 +182,14 @@ const Sidebar = React.forwardRef<
   ) => {
     const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
 
-    if (collapsible === "none") {
+    if (isMobile === undefined) {
+      // Render nothing or a placeholder skeleton until isMobile is determined
+      // Returning null might be acceptable for a sidebar if layout shifts are not a major concern.
+      // A skeleton could be used for better UX if needed: <Skeleton className="h-screen w-[--sidebar-width]" />
+      return null;
+    }
+
+    if (collapsible === "none" && !isMobile) { // Ensure collapsible=none is for desktop
       return (
         <div
           className={cn(
@@ -197,10 +203,10 @@ const Sidebar = React.forwardRef<
         </div>
       )
     }
-
+    
     if (isMobile) {
       return (
-        <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+        <Sheet open={openMobile} onOpenChange={setOpenMobile}>
           <SheetContent
             data-sidebar="sidebar"
             data-mobile="true"
@@ -211,9 +217,16 @@ const Sidebar = React.forwardRef<
               } as React.CSSProperties
             }
             side={side}
+            // Remove showClose prop if not supported, default X button is handled by SheetContent
           >
-            <SheetHeader className="p-4 border-b">
+            <SheetHeader className="p-4 border-b flex justify-between items-center">
               <SheetTitle>Menu</SheetTitle>
+              <SheetClose asChild>
+                <Button variant="ghost" size="icon">
+                  <X className="h-5 w-5" />
+                  <span className="sr-only">Close menu</span>
+                </Button>
+              </SheetClose>
             </SheetHeader>
             <div className="flex-1 flex h-full w-full flex-col overflow-y-auto">
                 {children}
@@ -223,6 +236,7 @@ const Sidebar = React.forwardRef<
       )
     }
 
+    // Desktop view
     return (
       <div
         ref={ref}
@@ -232,7 +246,6 @@ const Sidebar = React.forwardRef<
         data-variant={variant}
         data-side={side}
       >
-        {/* This is what handles the sidebar gap on desktop */}
         <div
           className={cn(
             "duration-200 relative h-svh w-[--sidebar-width] bg-transparent transition-[width] ease-linear",
@@ -249,7 +262,6 @@ const Sidebar = React.forwardRef<
             side === "left"
               ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
               : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
-            // Adjust the padding for floating and inset variants.
             variant === "floating" || variant === "inset"
               ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]"
               : "group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l",
@@ -274,41 +286,38 @@ const SidebarTrigger = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<typeof Button> & { asChild?: boolean }
 >(({ className, onClick, children, asChild = false, ...props }, ref) => {
-  const { toggleSidebar } = useSidebar();
+  const { toggleSidebar, isMobile } = useSidebar();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (typeof onClick === 'function') {
+    if (onClick) {
       onClick(event);
     }
-    toggleSidebar();
+    // Only toggle if isMobile is not undefined (i.e., client-side determination is complete)
+    if (isMobile !== undefined) {
+      toggleSidebar();
+    }
   };
 
-  if (asChild) {
-    return (
-      <Slot
-        ref={ref}
-        onClick={handleClick}
-        className={className}
-        {...props}
-      >
-        {children}
-      </Slot>
-    );
-  }
-
+  const Comp = asChild ? Slot : Button;
+  const effectiveChildren = children || (
+    <>
+      <PanelLeft />
+      <span className="sr-only">Toggle Sidebar</span>
+    </>
+  );
+  
   return (
-    <Button
+    <Comp
       ref={ref}
       data-sidebar="trigger"
       variant="ghost"
       size="icon"
-      className={cn("h-7 w-7", className)}
+      className={cn("h-7 w-7 focus-visible:ring-sidebar-ring", className)}
       onClick={handleClick}
       {...props}
     >
-      {children || <PanelLeft />} {/* Ensure children are rendered if provided, else PanelLeft */}
-      {!children && <span className="sr-only">Toggle Sidebar</span>}
-    </Button>
+      {effectiveChildren}
+    </Comp>
   );
 });
 SidebarTrigger.displayName = "SidebarTrigger"
@@ -612,7 +621,7 @@ const SidebarMenuButton = React.forwardRef<
         <TooltipContent
           side="right"
           align="center"
-          hidden={state !== "collapsed" || isMobile}
+          hidden={state !== "collapsed" || isMobile !== false} // Check isMobile is explicitly false for desktop
           {...tooltip}
         />
       </Tooltip>
