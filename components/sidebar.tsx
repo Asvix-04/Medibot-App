@@ -1,3 +1,4 @@
+//components/sidebar
 "use client"
 
 import Link from "next/link"
@@ -5,7 +6,7 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { MessageCircle, FileText, Pill, History, User, Moon, X, Plus, LogOut } from "lucide-react"
+import { MessageCircle, FileText, Pill, History, User, Moon, X, Plus, LogOut, Calendar } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
 import { cn } from "@/lib/utils"
 
@@ -21,6 +22,7 @@ export function Sidebar({ isOpen = true, onClose }: SidebarProps) {
   const menuItems = [
     { icon: MessageCircle, label: "AI Chatbot", href: "/chat" },
     { icon: FileText, label: "Info Summarizer", href: "/summarizer" },
+    { icon: Calendar, label: "Appointments", href: "/appointments" },
     { icon: Pill, label: "Medications", href: "/medications" },
     { icon: History, label: "Chat History", href: "/history" },
     { icon: User, label: "My Profile", href: "/profile" },

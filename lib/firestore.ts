@@ -1,3 +1,4 @@
+//lib/firestore
 import {
   collection,
   doc,
@@ -119,6 +120,26 @@ export interface NotificationSettings {
   appointmentReminders: boolean
   reminderTimes: string[]
   createdAt: Timestamp | Date
+}
+
+export interface Appointment {
+  id?: string
+  userId: string
+  hospitalName: string
+  hospitalAddress: string
+  hospitalPhone?: string
+  hospitalLocation?: {
+    lat: number
+    lng: number
+  }
+  doctorName: string
+  appointmentType: string
+  date: string
+  time: string
+  notes?: string
+  status: "scheduled" | "completed" | "cancelled"
+  createdAt: Timestamp | Date
+  updatedAt: Timestamp | Date
 }
 
 // User Profile Functions
@@ -407,6 +428,77 @@ export const getUserMedications = async (userId: string): Promise<Medication[]> 
   }
 }
 
+// Appointment Functions
+export const addAppointment = async (
+  userId: string,
+  appointment: Omit<Appointment, "id" | "userId" | "status" | "createdAt" | "updatedAt">,
+) => {
+  try {
+    const appointmentRef = collection(db, "appointments")
+    const appointmentData: Omit<Appointment, "id"> = {
+      userId,
+      ...appointment,
+      status: "scheduled",
+      createdAt: serverTimestamp() as Timestamp,
+      updatedAt: serverTimestamp() as Timestamp,
+    }
+
+    const docRef = await addDoc(appointmentRef, appointmentData)
+    return docRef.id
+  } catch (error) {
+    console.error("Error adding appointment:", error)
+    throw new Error("Failed to add appointment")
+  }
+}
+
+export const updateAppointment = async (appointmentId: string, data: Partial<Appointment>) => {
+  try {
+    const appointmentRef = doc(db, "appointments", appointmentId)
+    await updateDoc(appointmentRef, {
+      ...data,
+      updatedAt: serverTimestamp(),
+    })
+  } catch (error) {
+    console.error("Error updating appointment:", error)
+    throw new Error("Failed to update appointment")
+  }
+}
+
+export const deleteAppointment = async (appointmentId: string) => {
+  try {
+    const appointmentRef = doc(db, "appointments", appointmentId)
+    await deleteDoc(appointmentRef)
+  } catch (error) {
+    console.error("Error deleting appointment:", error)
+    throw new Error("Failed to delete appointment")
+  }
+}
+
+export const getUserAppointments = async (userId: string): Promise<Appointment[]> => {
+  try {
+    const appointmentsRef = collection(db, "appointments")
+    const q = query(appointmentsRef, where("userId", "==", userId), limit(50))
+
+    const querySnapshot = await getDocs(q)
+    const appointments = querySnapshot.docs.map(
+      (doc) =>
+        ({
+          id: doc.id,
+          ...doc.data(),
+        }) as Appointment,
+    )
+
+    return appointments.sort((a, b) => {
+      const aTime = new Date(`${a.date}T${a.time}`).getTime()
+      const bTime = new Date(`${b.date}T${b.time}`).getTime()
+      return bTime - aTime
+        })
+  } catch (error) {
+    console.error("Error getting appointments:", error)
+    return []
+  }
+}
+
 // Notification Functions
 export const createNotificationSettings = async (userId: string) => {
   try {
@@ -634,6 +726,41 @@ export const subscribeToUserMedications = (userId: string, callback: (medication
     },
     (error) => {
       console.error("Error in medications listener:", error)
+      callback([])
+    },
+  )
+}
+
+export const subscribeToUserAppointments = (userId: string, callback: (appointments: Appointment[]) => void) => {
+  const appointmentsRef = collection(db, "appointments")
+  const q = query(appointmentsRef, where("userId", "==", userId), limit(50))
+
+  return onSnapshot(
+    q,
+    (querySnapshot) => {
+      try {
+        const appointments = querySnapshot.docs.map(
+          (doc) =>
+            ({
+              id: doc.id,
+              ...doc.data(),
+            }) as Appointment,
+        )
+
+        const sortedAppointments = appointments.sort((a, b) => {
+          const aTime = new Date(`${a.date}T${a.time}`).getTime()
+          const bTime = new Date(`${b.date}T${b.time}`).getTime()
+          return bTime - aTime
+        })
+
+        callback(sortedAppointments)
+      } catch (error) {
+        console.error("Error processing appointments:", error)
+        callback([])
+      }
+    },
+    (error) => {
+      console.error("Error in appointments listener:", error)
       callback([])
     },
   )
