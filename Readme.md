@@ -1,4 +1,4 @@
-# MedBot - AI-Powered Healthcare Assistant
+# MediBot - AI-Powered Healthcare Assistant
 
 A comprehensive healthcare management application that combines AI-powered medical assistance with medication tracking, health monitoring, and personalized health insights.
 
