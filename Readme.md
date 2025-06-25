@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # MedBot - AI-Powered Healthcare Assistant
 
 A comprehensive healthcare management application that combines AI-powered medical assistance with medication tracking, health monitoring, and personalized health insights.
@@ -26,7 +25,7 @@ A comprehensive healthcare management application that combines AI-powered medic
 
 ## 🏗️ Project Structure
 
-\`\`\`
+```
 medbot-healthcare-app/
 ├── frontend/                 # Frontend React/Next.js application
 │   ├── components/          # Reusable UI components
@@ -52,7 +51,7 @@ medbot-healthcare-app/
 │   ├── types/              # TypeScript type definitions
 │   └── constants/          # Shared constants
 └── docs/                   # Documentation
-\`\`\`
+```
 
 ## 🚀 Getting Started
 
@@ -65,26 +64,26 @@ medbot-healthcare-app/
 ### Installation
 
 1. **Clone the repository**
-   \`\`\`bash
-   git clone https://github.com/your-username/medbot-healthcare-app.git
-   cd medbot-healthcare-app
-   \`\`\`
+   ```bash
+   git clone https://github.com/Asvix-04/The-app.git
+   cd The-app
+   ```
 
 2. **Install dependencies**
-   \`\`\`bash
+   ```bash
    npm install
    # or
    yarn install
-   \`\`\`
+   ```
 
 3. **Environment Setup**
-   \`\`\`bash
+   ```bash
    # Copy environment template
    cp .env.example .env.local
    
    # Edit .env.local with your configuration
    nano .env.local
-   \`\`\`
+   ```
 
 4. **Configure Firebase**
    - Create a new Firebase project at https://console.firebase.google.com
@@ -92,11 +91,11 @@ medbot-healthcare-app/
    - Copy your Firebase configuration to `.env.local`
 
 5. **Start Development Server**
-   \`\`\`bash
+   ```bash
    npm run dev
    # or
    yarn dev
-   \`\`\`
+   ```
 
 6. **Open Application**
    Navigate to `http://localhost:3000` in your browser
@@ -107,7 +106,7 @@ medbot-healthcare-app/
 
 Create a `.env.local` file in the root directory with the following variables:
 
-\`\`\`env
+```env
 # Firebase Configuration
 NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
@@ -123,7 +122,7 @@ GOOGLE_CLOUD_VISION_API_KEY=your_google_vision_api_key
 # App Configuration
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 NEXT_PUBLIC_APP_NAME=MedBot
-\`\`\`
+```
 
 ### Firebase Setup
 
@@ -206,7 +205,7 @@ NEXT_PUBLIC_APP_NAME=MedBot
 
 ### Development Commands
 
-\`\`\`bash
+```bash
 # Start development server
 npm run dev
 
@@ -221,7 +220,7 @@ npm run lint
 
 # Run tests
 npm run test
-\`\`\`
+```
 
 ## 🔒 Security & Privacy
 
@@ -247,18 +246,18 @@ npm run test
 ### Production Deployment
 
 1. **Build Application**
-   \`\`\`bash
+   ```bash
    npm run build
-   \`\`\`
+   ```
 
 2. **Deploy to Vercel** (Recommended)
-   \`\`\`bash
+   ```bash
    # Install Vercel CLI
    npm i -g vercel
    
    # Deploy
    vercel --prod
-   \`\`\`
+   ```
 
 3. **Environment Variables**
    - Set production environment variables in Vercel dashboard
